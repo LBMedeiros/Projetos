@@ -1,7 +1,7 @@
 const tmi = require("tmi.js");
 const fs = require("fs");
 
-// carregar comandos do JSON
+//carregar comandos do JSON
 const commandsData = JSON.parse(fs.readFileSync("./commands.json", "utf8"));
 
 const client = new tmi.Client({
@@ -18,12 +18,12 @@ client.on("connected", (address, port) => {
   console.log(`Bot conectado em ${address}:${port}`);
 });
 
-// mensagem automática
+//mensagem automática
 setInterval(() => {
   client.say("#voipp_", "🔥 Siga o canal para não perder as lives!");
 }, 500000);
 
-// cooldown global
+//cooldown global
 let cooldown = false;
 
 client.on("message", async (channel, tags, message, self) => {
@@ -31,20 +31,20 @@ client.on("message", async (channel, tags, message, self) => {
 
   const command = message.toLowerCase().trim();
 
-  // 🔎 procurar comando no JSON
+  //procurar comando no JSON
   const cmd = commandsData.comandos.find((c) => c.nome === command);
 
   if (cmd) {
     let resposta = cmd.resposta;
 
-    // 🔄 variáveis dinâmicas
+    //variáveis dinâmicas
     resposta = resposta.replace("{user}", tags.username);
 
     client.say(channel, resposta);
     return;
   }
 
-  // ⏱️ cooldown global
+  //cooldown global
   if (cooldown) return;
 
   cooldown = true;
